@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Stress Level Detection</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>StressSense AI</h1>
+                <span class="tagline">Detecting Stress Through Interaction Patterns</span>
+            </div>
+            <div class="header-controls">
+                <button id="themeToggle" class="btn-icon">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="infoBtn" class="btn-icon">
+                    <i class="fas fa-info-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel -->
+            <div class="left-panel">
+                <!-- Stress Level Card -->
+                <div class="card stress-level-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-brain"></i> Current Stress Level</h2>
+                        <div class="status-indicator" id="statusIndicator">
+                            <span class="status-dot"></span>
+                            <span class="status-text">Monitoring...</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="stress-gauge">
+                            <div class="gauge-container">
+                                <canvas id="stressGauge"></canvas>
+                                <div class="gauge-center">
+                                    <span id="stressLevelText">CALM</span>
+                                    <span id="stressConfidence">85%</span>
+                                </div>
+                            </div>
+                            <div class="stress-scale">
+                                <div class="scale-label calm">Calm</div>
+                                <div class="scale-label mild">Mild</div>
+                                <div class="scale-label moderate">Moderate</div>
+                                <div class="scale-label high">High</div>
+                                <div class="scale-label extreme">Extreme</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stress-indicators">
+                            <div class="indicator">
+                                <div class="indicator-label">
+                                    <i class="fas fa-keyboard"></i>
+                                    <span>Typing Speed</span>
+                                </div>
+                                <div class="indicator-value" id="typingSpeed">60 WPM</div>
+                                <div class="indicator-bar">
+                                    <div class="indicator-fill" id="typingBar"></div>
+                                </div>
+                            </div>
+                            <div class="indicator">
+                                <div class="indicator-label">
+                                    <i class="fas fa-mouse"></i>
+                                    <span>Mouse Randomness</span>
+                                </div>
+                                <div class="indicator-value" id="mouseRandomness">0.15</div>
+                                <div class="indicator-bar">
+                                    <div class="indicator-fill" id="mouseBar"></div>
+                                </div>
+                            </div>
+                            <div class="indicator">
+                                <div class="indicator-label">
+                                    <i class="fas fa-backspace"></i>
+                                    <span>Error Rate</span>
+                                </div>
+                                <div class="indicator-value" id="errorRate">5%</div>
+                                <div class="indicator-bar">
+                                    <div class="indicator-fill" id="errorBar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-time Stats -->
+                <div class="card stats-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-line"></i> Real-time Statistics</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="stat-icon">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="keyPressCount">0</div>
+                                    <div class="stat-label">Key Presses</div>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-icon">
+                                    <i class="fas fa-mouse-pointer"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="mouseMoveCount">0</div>
+                                    <div class="stat-label">Mouse Moves</div>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="sessionTime">0s</div>
+                                    <div class="stat-label">Session Time</div>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-icon">
+                                    <i class="fas fa-heartbeat"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="stressScore">0</div>
+                                    <div class="stat-label">Stress Score</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="right-panel">
+                <!-- Control Panel -->
+                <div class="card control-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-sliders-h"></i> Control Panel</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="control-group">
+                            <button id="startBtn" class="btn-primary">
+                                <i class="fas fa-play"></i> Start Monitoring
+                            </button>
+                            <button id="pauseBtn" class="btn-secondary" disabled>
+                                <i class="fas fa-pause"></i> Pause
+                            </button>
+                            <button id="resetBtn" class="btn-danger">
+                                <i class="fas fa-redo"></i> Reset Session
+                            </button>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <h3><i class="fas fa-cog"></i> Monitoring Settings</h3>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="trackKeyboard" checked>
+                                    <span>Track Keyboard Patterns</span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="trackMouse" checked>
+                                    <span>Track Mouse Movements</span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="trackClicks" checked>
+                                    <span>Track Click Pressure</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="user-info">
+                            <h3><i class="fas fa-user"></i> User Information</h3>
+                            <input type="text" id="userName" placeholder="Enter your name (optional)" class="input-field">
+                            <textarea id="userNotes" placeholder="Add notes about your current state..." class="textarea-field"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History & Trends -->
+                <div class="card history-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-history"></i> Stress History</h2>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="stressHistoryChart"></canvas>
+                        <div class="history-list" id="historyList">
+                            <!-- History items will be added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization Area -->
+        <div class="visualization-area">
+            <div class="card visualization-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-project-diagram"></i> Interaction Visualization</h2>
+                    <div class="visualization-controls">
+                        <button id="vizTypeBtn" class="btn-small">
+                            <i class="fas fa-exchange-alt"></i> Switch View
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="visualization-container">
+                        <canvas id="mouseHeatmap"></canvas>
+                        <div class="keyboard-visualization" id="keyboardViz">
+                            <!-- Keyboard visualization will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>Human Stress Level Detection System v1.0</p>
+                    <p>Tracking keyboard speed, mouse randomness, and click patterns</p>
+                </div>
+                <div class="footer-stats">
+                    <span id="connectionStatus">
+                        <i class="fas fa-plug"></i> Not Connected
+                    </span>
+                    <span id="dataPoints">Data Points: 0</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal for Information -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-info-circle"></i> About StressSense AI</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>This system detects stress levels by analyzing your interaction patterns:</p>
+                <ul>
+                    <li><strong>Typing Speed:</strong> Variations in typing rhythm and speed</li>
+                    <li><strong>Mouse Randomness:</strong> Irregular mouse movements</li>
+                    <li><strong>Click Patterns:</strong> Frequency and intensity of clicks</li>
+                    <li><strong>Error Rate:</strong> Backspaces and corrections</li>
+                </ul>
+                <p>All data is processed locally and anonymously. No personal data is stored.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/keyboardTracker.js"></script>
+    <script src="js/mouseTracker.js"></script>
+    <script src="js/visualization.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
